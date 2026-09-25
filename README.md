@@ -10,7 +10,7 @@ Simulateur de salle des marchés inspiré de l'économie des MMORPG (Hôtel des 
 4. **Analytique (OLAP) :** Exploitation de la base de données persistante pour analyser les volumes échangés et l'historique sans impacter les performances en direct.
 5. **Simulation d'événements :** Fonctionnalité "Tweet d'Elon Musk" pour injecter massivement des ordres d'achat ou de vente et tester la résilience du système.
 
-English Below
+## English Below
 
 An auction house trading floor simulator inspired by MMORPG economies, designed to handle Big Data challenges (Velocity and Volume) through a robust, asynchronous architecture.
 

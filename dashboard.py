@@ -21,7 +21,6 @@ except requests.exceptions.ConnectionError:
     subprocess.Popen([sys.executable, "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000"])
     time.sleep(3) # Délai pour laisser au backend le temps de démarrer
     
-# --- CORRECTION POUR STREAMLIT CLOUD ---
 @st.cache_resource
 def start_fastapi():
     try:
@@ -32,7 +31,7 @@ def start_fastapi():
     return True
 
 start_fastapi()
-# ---------------------------------------
+
 
 st.set_page_config(page_title="MMO Market Simulator", layout="wide", page_icon="📈")
 

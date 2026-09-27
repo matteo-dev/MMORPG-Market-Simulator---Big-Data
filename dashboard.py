@@ -5,7 +5,22 @@ import requests
 import pandas as pd 
 import time 
 import subprocess
+import subprocess
+import sys
+import time
+import requests
+import streamlit as st
 
+API_URL = "http://127.0.0.1:8000/api"
+
+# Vérifie si le backend répond déjà. Si ce n'est pas le cas, on le lance.
+try:
+    requests.get(f"{API_URL}/prices")
+except requests.exceptions.ConnectionError:
+    # Lancement du serveur uvicorn en tâche de fond
+    subprocess.Popen([sys.executable, "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000"])
+    time.sleep(3) # Délai pour laisser au backend le temps de démarrer
+    
 # --- CORRECTION POUR STREAMLIT CLOUD ---
 @st.cache_resource
 def start_fastapi():

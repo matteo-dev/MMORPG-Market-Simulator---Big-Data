@@ -1,8 +1,8 @@
-# 📈 MMORPG Market Simulator - Big Data
+# MMORPG Market Simulator - Big Data
 
 Simulateur de salle des marchés inspiré de l'économie des MMORPG (Hôtel des Ventes), conçu pour relever les défis du Big Data (Vélocité et Volume) à travers une architecture robuste et asynchrone.
 
-## 🚀 Fonctionnalités Clés
+## Fonctionnalités Clés
 
 1. **Architecture Asynchrone & File d'attente :** Séparation des écritures et des lectures pour encaisser une charge intense (*Heavy Writes*) sans bloquer l'interface.
 2. **Event Sourcing (SQLite) :** Journalisation immuable de chaque transaction pour garantir la persistance et la sécurité des données financières.
@@ -14,7 +14,7 @@ Simulateur de salle des marchés inspiré de l'économie des MMORPG (Hôtel des 
 
 An auction house trading floor simulator inspired by MMORPG economies, designed to handle Big Data challenges (Velocity and Volume) through a robust, asynchronous architecture.
 
-## 🚀 Key Features
+## Key Features
 1. **Asynchronous Architecture & Message Queue:** Separation of writes and reads to absorb heavy loads (Heavy Writes) without blocking the interface.
 2. **Event Sourcing (SQLite):** Immutable logging of every transaction to ensure data persistence and financial security.
 3. **Live Trading (OLTP):** Real-time management of player portfolios, in-memory (RAM) market prices, and autonomous trading bot simulation.
@@ -23,7 +23,7 @@ An auction house trading floor simulator inspired by MMORPG economies, designed 
 
 ---
 
-## 🛠️ Installation et Lancement
+## Installation et Lancement
 
 1. **Cloner le dépôt / Clone the reposit :**
    ```bash

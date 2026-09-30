@@ -218,3 +218,31 @@ async def musk_tweet(action: str):
             "qty": random.randint(5, 15)
         })
     return {"status": f"Tweet {action} initié"}
+
+# Route API RESET TOTAL 
+@app.post("/api/reset")
+async def reset_market():
+    # 1. On vide la base de données
+    cursor.execute("DELETE FROM events")
+    db_conn.commit()
+    
+    # 2. On remet les variables globales à zéro
+    market_prices.update({"wood": 10.0, "iron": 50.0, "gold": 200.0})
+    price_history.clear()
+    price_history.update({"wood": [10.0], "iron": [50.0], "gold": [200.0]})
+    player_inventory.update({
+        "balance": 1000.0,
+        "wood": 20,
+        "iron": 20,
+        "gold": 20
+    })
+    
+    # 3. On purge la queue asynchrone en cours
+    while not order_queue.empty():
+        try:
+            order_queue.get_nowait()
+            order_queue.task_done()
+        except asyncio.QueueEmpty:
+            break
+            
+    return {"status": "Market reset successful"}

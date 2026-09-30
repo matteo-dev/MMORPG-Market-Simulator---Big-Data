@@ -54,6 +54,17 @@ def trigger_musk_tweet(action):
     else:
         st.toast("📉 NEGATIVE TWEET! 30 SELL orders injected at once...")
 
+def trigger_reset():
+    try:
+        requests.post(f"{API_URL}/reset")
+        st.toast("🧹 Market has been completely reset to zero!")
+        time.sleep(1) # Le temps que le toast s'affiche
+        st.rerun() # Recharge la page
+    except:
+        st.error("Error during reset.")
+
+st.sidebar.button("🧹 Reset the entire market", type="secondary", on_click=trigger_reset)
+
 st.title("📈 MMORPG Market Simulator - Big Data")
 
 tab_live, tab_analytics = st.tabs(["⚡ Live Trading (OLTP)", "📊 Analytics (OLAP)"])

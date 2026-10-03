@@ -45,6 +45,14 @@ player_inventory = {
     "gold": 20
 }
 
+# --- AJOUT POUR OPTIMISATION : Cache analytique en RAM ---
+market_analytics = {
+    "wood": {"total_trades": 0, "total_qty": 0, "total_volume": 0.0},
+    "iron": {"total_trades": 0, "total_qty": 0, "total_volume": 0.0},
+    "gold": {"total_trades": 0, "total_qty": 0, "total_volume": 0.0}
+}
+# --------------------------------------------------------
+
 # File d'attente asynchrone pour les ordres de marché. Les joueurs et les bots placeront leurs ordres dans cette file, 
 # et le moteur du marché les traitera de manière asynchrone.
 order_queue = asyncio.Queue()
@@ -94,6 +102,12 @@ async def market_engine():
                 (datetime.now().strftime("%H:%M:%S"), entity, action, resource, qty, current_price)
             )
             db_conn.commit()
+
+            # --- AJOUT POUR OPTIMISATION : Mise à jour en temps réel des analytics en RAM ---
+            market_analytics[resource]["total_trades"] += 1
+            market_analytics[resource]["total_qty"] += qty
+            market_analytics[resource]["total_volume"] += (qty * current_price)
+            # -----------------------------------------------------------------------------
 
             # Ajustement des prix du marché : plus la quantité est élevée, plus l'impact sur le prix est important.
             impact = 0.02 * qty
@@ -192,15 +206,18 @@ async def place_order(trade: TradeRequest):
 @app.get("/api/analytics")
 # Fonction pour récupérer les données analytiques du marché. Elle agrège les transactions par ressource 
 def get_analytics():
-    cursor.execute("""
-        SELECT resource, COUNT(*), SUM(qty), SUM(qty * price_per_unit) 
-        FROM events 
-        GROUP BY resource
-    """)
+    # --- MODIFICATION POUR OPTIMISATION : Lecture ultra-rapide depuis la RAM au lieu de requêter la BDD SQL ---
+    return [
+        {
+            "resource": res, 
+            "total_trades": data["total_trades"], 
+            "total_qty": data["total_qty"], 
+            "total_volume": round(data["total_volume"], 2)
+        } 
+        for res, data in market_analytics.items()
+    ]
     # Les résultats de la requête sont formatés en une liste de dictionnaires, 
     # avec des clés pour la ressource, le nombre total de transactions, la quantité totale échangée, et le volume total (quantité * prix).
-    rows = cursor.fetchall()
-    return [{"resource": r[0], "total_trades": r[1], "total_qty": r[2], "total_volume": round(r[3] or 0, 2)} for r in rows]
 
 # Route API pour simuler un tweet d'Elon Musk. 
 # Cette route permet de simuler l'impact d'un tweet positif ou négatif sur le marché, 
@@ -236,6 +253,10 @@ async def reset_market():
         "iron": 20,
         "gold": 20
     })
+
+    #Réinitialisation du cache analytique 
+    for res in market_analytics:
+        market_analytics[res] = {"total_trades": 0, "total_qty": 0, "total_volume": 0.0}
     
     # 3. On purge la queue asynchrone en cours
     while not order_queue.empty():
